@@ -1,0 +1,61 @@
+{
+  "image_id": "812ac0e47a788ac6d95720067cfd42e9",
+  "split": "train",
+  "birads": "BI-RADS 4",
+  "lesions": [
+    {
+      "type": "Skin Thickening",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 167.42599487305,
+        "ymin": 1137.8299560547,
+        "xmax": 813.57897949219,
+        "ymax": 2158.75
+      },
+      "bbox_normalized": {
+        "x_center": 0.17517945970807858,
+        "y_center": 0.46853040876274876,
+        "width": 0.23076892307826427,
+        "height": 0.29019898918285963
+      }
+    },
+    {
+      "type": "Global Asymmetry",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 167.42599487305,
+        "ymin": 1137.8299560547,
+        "xmax": 813.57897949219,
+        "ymax": 2158.75
+      },
+      "bbox_normalized": {
+        "x_center": 0.17517945970807858,
+        "y_center": 0.46853040876274876,
+        "width": 0.23076892307826427,
+        "height": 0.29019898918285963
+      }
+    },
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 167.42599487305,
+        "ymin": 1137.8299560547,
+        "xmax": 813.57897949219,
+        "ymax": 2158.75
+      },
+      "bbox_normalized": {
+        "x_center": 0.17517945970807858,
+        "y_center": 0.46853040876274876,
+        "width": 0.23076892307826427,
+        "height": 0.29019898918285963
+      }
+    }
+  ]
+}

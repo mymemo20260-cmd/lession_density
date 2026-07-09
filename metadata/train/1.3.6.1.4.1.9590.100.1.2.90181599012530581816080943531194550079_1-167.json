@@ -1,0 +1,19 @@
+{
+  "image_id": "1.3.6.1.4.1.9590.100.1.2.90181599012530581816080943531194550079_1-167",
+  "series_uid": "1.3.6.1.4.1.9590.100.1.2.90181599012530581816080943531194550079",
+  "image_num": "1-167",
+  "split": "train",
+  "birads": "BI-RADS 0",
+  "breast_density": NaN,
+  "pathology": "BENIGN",
+  "laterality": "RIGHT",
+  "view": "MLO",
+  "lesions": [
+    {
+      "type": "mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 0"
+    }
+  ]
+}

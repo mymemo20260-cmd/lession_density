@@ -1,0 +1,79 @@
+{
+  "image_id": "fde50065b6d598d0bb62a08a0f0d97b7",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "lesions": [
+    {
+      "type": "Suspicious Calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 2119.3601074219,
+        "ymin": 1626.9899902344,
+        "xmax": 2721.580078125,
+        "ymax": 2192.1599121094
+      },
+      "bbox_normalized": {
+        "x_center": 0.8644536045619464,
+        "y_center": 0.5428012936816089,
+        "width": 0.2150785609653929,
+        "height": 0.16065091582575325
+      }
+    },
+    {
+      "type": "Architectural Distortion",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 2119.3601074219,
+        "ymin": 1626.9899902344,
+        "xmax": 2721.580078125,
+        "ymax": 2192.1599121094
+      },
+      "bbox_normalized": {
+        "x_center": 0.8644536045619464,
+        "y_center": 0.5428012936816089,
+        "width": 0.2150785609653929,
+        "height": 0.16065091582575325
+      }
+    },
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 2119.3601074219,
+        "ymin": 1626.9899902344,
+        "xmax": 2721.580078125,
+        "ymax": 2192.1599121094
+      },
+      "bbox_normalized": {
+        "x_center": 0.8644536045619464,
+        "y_center": 0.5428012936816089,
+        "width": 0.2150785609653929,
+        "height": 0.16065091582575325
+      }
+    },
+    {
+      "type": "Skin Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 2119.3601074219,
+        "ymin": 1626.9899902344,
+        "xmax": 2721.580078125,
+        "ymax": 2192.1599121094
+      },
+      "bbox_normalized": {
+        "x_center": 0.8644536045619464,
+        "y_center": 0.5428012936816089,
+        "width": 0.2150785609653929,
+        "height": 0.16065091582575325
+      }
+    }
+  ]
+}

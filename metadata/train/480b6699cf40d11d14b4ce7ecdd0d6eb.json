@@ -1,0 +1,43 @@
+{
+  "image_id": "480b6699cf40d11d14b4ce7ecdd0d6eb",
+  "split": "train",
+  "birads": "BI-RADS 4",
+  "lesions": [
+    {
+      "type": "Suspicious Calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 5.1183099746704,
+        "ymin": 1002.2399902344,
+        "xmax": 527.83099365234,
+        "ymax": 1870.5300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.10190235250994462,
+        "y_center": 0.40122486306303073,
+        "width": 0.1998901276014033,
+        "height": 0.24253911705656428
+      }
+    },
+    {
+      "type": "Focal Asymmetry",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 5.1183099746704,
+        "ymin": 1002.2399902344,
+        "xmax": 527.83099365234,
+        "ymax": 1870.5300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.10190235250994462,
+        "y_center": 0.40122486306303073,
+        "width": 0.1998901276014033,
+        "height": 0.24253911705656428
+      }
+    }
+  ]
+}

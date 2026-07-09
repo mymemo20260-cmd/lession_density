@@ -1,0 +1,43 @@
+{
+  "image_id": "2fc787f72bfa6b6c0bbc0a85413c8a9f",
+  "split": "val",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Skin Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 2134.3000488281,
+        "ymin": 619.42498779297,
+        "xmax": 2552.2299804688,
+        "ymax": 1029.1700439453
+      },
+      "bbox_normalized": {
+        "x_center": 0.8368803623744464,
+        "y_center": 0.23430856050856597,
+        "width": 0.14926068987167862,
+        "height": 0.11647102221498865
+      }
+    },
+    {
+      "type": "Skin Thickening",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 2134.3000488281,
+        "ymin": 619.42498779297,
+        "xmax": 2552.2299804688,
+        "ymax": 1029.1700439453
+      },
+      "bbox_normalized": {
+        "x_center": 0.8368803623744464,
+        "y_center": 0.23430856050856597,
+        "width": 0.14926068987167862,
+        "height": 0.11647102221498865
+      }
+    }
+  ]
+}

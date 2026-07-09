@@ -1,0 +1,61 @@
+{
+  "image_id": "360a2637d08a1b3f8fef4f3a3e14e717",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "lesions": [
+    {
+      "type": "Skin Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 346.04699707031,
+        "ymin": 1135.7399902344,
+        "xmax": 708.34899902344,
+        "ymax": 1581.5600585938
+      },
+      "bbox_normalized": {
+        "x_center": 0.18828499930245535,
+        "y_center": 0.38619955213590107,
+        "width": 0.12939357212611788,
+        "height": 0.12672543159732802
+      }
+    },
+    {
+      "type": "Architectural Distortion",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 346.04699707031,
+        "ymin": 1135.7399902344,
+        "xmax": 708.34899902344,
+        "ymax": 1581.5600585938
+      },
+      "bbox_normalized": {
+        "x_center": 0.18828499930245535,
+        "y_center": 0.38619955213590107,
+        "width": 0.12939357212611788,
+        "height": 0.12672543159732802
+      }
+    },
+    {
+      "type": "Suspicious Calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 346.04699707031,
+        "ymin": 1135.7399902344,
+        "xmax": 708.34899902344,
+        "ymax": 1581.5600585938
+      },
+      "bbox_normalized": {
+        "x_center": 0.18828499930245535,
+        "y_center": 0.38619955213590107,
+        "width": 0.12939357212611788,
+        "height": 0.12672543159732802
+      }
+    }
+  ]
+}

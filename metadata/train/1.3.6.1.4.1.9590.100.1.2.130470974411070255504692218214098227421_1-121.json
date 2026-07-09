@@ -1,0 +1,19 @@
+{
+  "image_id": "1.3.6.1.4.1.9590.100.1.2.130470974411070255504692218214098227421_1-121",
+  "series_uid": "1.3.6.1.4.1.9590.100.1.2.130470974411070255504692218214098227421",
+  "image_num": "1-121",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "breast_density": 2.0,
+  "pathology": "MALIGNANT",
+  "laterality": "RIGHT",
+  "view": "MLO",
+  "lesions": [
+    {
+      "type": "calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 5"
+    }
+  ]
+}

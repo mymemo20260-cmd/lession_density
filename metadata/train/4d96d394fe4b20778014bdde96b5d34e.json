@@ -1,0 +1,61 @@
+{
+  "image_id": "4d96d394fe4b20778014bdde96b5d34e",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "lesions": [
+    {
+      "type": "Suspicious Calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 211.20799255371,
+        "ymin": 1480.0,
+        "xmax": 599.083984375,
+        "ymax": 2034.6899414062
+      },
+      "bbox_normalized": {
+        "x_center": 0.1446949958801268,
+        "y_center": 0.4995295539235645,
+        "width": 0.138527139936175,
+        "height": 0.15767195605633877
+      }
+    },
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 211.20799255371,
+        "ymin": 1480.0,
+        "xmax": 599.083984375,
+        "ymax": 2034.6899414062
+      },
+      "bbox_normalized": {
+        "x_center": 0.1446949958801268,
+        "y_center": 0.4995295539235645,
+        "width": 0.138527139936175,
+        "height": 0.15767195605633877
+      }
+    },
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 211.20799255371,
+        "ymin": 1480.0,
+        "xmax": 599.083984375,
+        "ymax": 2034.6899414062
+      },
+      "bbox_normalized": {
+        "x_center": 0.1446949958801268,
+        "y_center": 0.4995295539235645,
+        "width": 0.138527139936175,
+        "height": 0.15767195605633877
+      }
+    }
+  ]
+}

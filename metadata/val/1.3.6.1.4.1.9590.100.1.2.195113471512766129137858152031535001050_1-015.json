@@ -1,0 +1,19 @@
+{
+  "image_id": "1.3.6.1.4.1.9590.100.1.2.195113471512766129137858152031535001050_1-015",
+  "series_uid": "1.3.6.1.4.1.9590.100.1.2.195113471512766129137858152031535001050",
+  "image_num": "1-015",
+  "split": "val",
+  "birads": "BI-RADS 4",
+  "breast_density": 1.0,
+  "pathology": "BENIGN",
+  "laterality": "LEFT",
+  "view": "CC",
+  "lesions": [
+    {
+      "type": "calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 4"
+    }
+  ]
+}

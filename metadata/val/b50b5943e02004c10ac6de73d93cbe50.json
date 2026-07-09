@@ -1,0 +1,25 @@
+{
+  "image_id": "b50b5943e02004c10ac6de73d93cbe50",
+  "split": "val",
+  "birads": "BI-RADS 3",
+  "lesions": [
+    {
+      "type": "Asymmetry",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 3",
+      "bbox_original": {
+        "xmin": 481.0151349357629,
+        "ymin": 2557.0210205219973,
+        "xmax": 588.8037142468523,
+        "ymax": 2657.1600877529445
+      },
+      "bbox_normalized": {
+        "x_center": 0.1902238352031677,
+        "y_center": 0.7282375849546008,
+        "width": 0.03833164271375872,
+        "height": 0.027971806489091366
+      }
+    }
+  ]
+}

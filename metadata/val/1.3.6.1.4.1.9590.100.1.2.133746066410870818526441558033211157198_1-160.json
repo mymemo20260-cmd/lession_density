@@ -1,0 +1,19 @@
+{
+  "image_id": "1.3.6.1.4.1.9590.100.1.2.133746066410870818526441558033211157198_1-160",
+  "series_uid": "1.3.6.1.4.1.9590.100.1.2.133746066410870818526441558033211157198",
+  "image_num": "1-160",
+  "split": "val",
+  "birads": "BI-RADS 4",
+  "breast_density": NaN,
+  "pathology": "MALIGNANT",
+  "laterality": "RIGHT",
+  "view": "CC",
+  "lesions": [
+    {
+      "type": "mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4"
+    }
+  ]
+}

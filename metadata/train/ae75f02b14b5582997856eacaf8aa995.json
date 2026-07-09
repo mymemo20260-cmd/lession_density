@@ -1,0 +1,43 @@
+{
+  "image_id": "ae75f02b14b5582997856eacaf8aa995",
+  "split": "train",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Skin Thickening",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 1332.1600341797,
+        "ymin": 2345.2299804688,
+        "xmax": 1438.4000244141,
+        "ymax": 2774.0300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.4947428676060357,
+        "y_center": 0.7275810133265634,
+        "width": 0.03794285365514288,
+        "height": 0.12188744992271172
+      }
+    },
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 1332.1600341797,
+        "ymin": 2345.2299804688,
+        "xmax": 1438.4000244141,
+        "ymax": 2774.0300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.4947428676060357,
+        "y_center": 0.7275810133265634,
+        "width": 0.03794285365514288,
+        "height": 0.12188744992271172
+      }
+    }
+  ]
+}

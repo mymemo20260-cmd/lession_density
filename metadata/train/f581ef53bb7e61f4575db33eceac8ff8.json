@@ -1,0 +1,43 @@
+{
+  "image_id": "f581ef53bb7e61f4575db33eceac8ff8",
+  "split": "train",
+  "birads": "BI-RADS 4",
+  "lesions": [
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 588.8740234375,
+        "ymin": 1397.7099609375,
+        "xmax": 812.36199951172,
+        "ymax": 1734.7199707031
+      },
+      "bbox_normalized": {
+        "x_center": 0.2502207183837893,
+        "y_center": 0.44520038823772035,
+        "width": 0.0798171343122214,
+        "height": 0.0957959095411029
+      }
+    },
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 588.8740234375,
+        "ymin": 1397.7099609375,
+        "xmax": 812.36199951172,
+        "ymax": 1734.7199707031
+      },
+      "bbox_normalized": {
+        "x_center": 0.2502207183837893,
+        "y_center": 0.44520038823772035,
+        "width": 0.0798171343122214,
+        "height": 0.0957959095411029
+      }
+    }
+  ]
+}

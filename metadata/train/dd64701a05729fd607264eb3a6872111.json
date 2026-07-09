@@ -1,0 +1,25 @@
+{
+  "image_id": "dd64701a05729fd607264eb3a6872111",
+  "split": "train",
+  "birads": "BI-RADS 4",
+  "lesions": [
+    {
+      "type": "Architectural Distortion",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 2526.4699707031,
+        "ymin": 2046.9899902344,
+        "xmax": 2648.5300292969,
+        "ymax": 2166.4299316406
+      },
+      "bbox_normalized": {
+        "x_center": 0.9241071428571429,
+        "y_center": 0.5988373965143547,
+        "width": 0.0435928780692143,
+        "height": 0.033951091928993815
+      }
+    }
+  ]
+}

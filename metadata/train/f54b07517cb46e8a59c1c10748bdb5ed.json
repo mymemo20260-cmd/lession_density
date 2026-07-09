@@ -1,0 +1,25 @@
+{
+  "image_id": "f54b07517cb46e8a59c1c10748bdb5ed",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "lesions": [
+    {
+      "type": "Suspicious Calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 1138.9599609375,
+        "ymin": 1267.9300537109,
+        "xmax": 1588.7700195312,
+        "ymax": 2074.25
+      },
+      "bbox_normalized": {
+        "x_center": 0.6778653032973907,
+        "y_center": 0.5942709910581259,
+        "width": 0.22356364741237578,
+        "height": 0.28674251290508534
+      }
+    }
+  ]
+}

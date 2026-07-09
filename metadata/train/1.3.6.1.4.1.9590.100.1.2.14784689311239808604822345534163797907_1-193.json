@@ -1,0 +1,19 @@
+{
+  "image_id": "1.3.6.1.4.1.9590.100.1.2.14784689311239808604822345534163797907_1-193",
+  "series_uid": "1.3.6.1.4.1.9590.100.1.2.14784689311239808604822345534163797907",
+  "image_num": "1-193",
+  "split": "train",
+  "birads": "BI-RADS 2",
+  "breast_density": 1.0,
+  "pathology": "BENIGN_WITHOUT_CALLBACK",
+  "laterality": "LEFT",
+  "view": "MLO",
+  "lesions": [
+    {
+      "type": "calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 2"
+    }
+  ]
+}

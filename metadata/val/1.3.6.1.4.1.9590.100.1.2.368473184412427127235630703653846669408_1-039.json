@@ -1,0 +1,19 @@
+{
+  "image_id": "1.3.6.1.4.1.9590.100.1.2.368473184412427127235630703653846669408_1-039",
+  "series_uid": "1.3.6.1.4.1.9590.100.1.2.368473184412427127235630703653846669408",
+  "image_num": "1-039",
+  "split": "val",
+  "birads": "BI-RADS 3",
+  "breast_density": NaN,
+  "pathology": "BENIGN_WITHOUT_CALLBACK",
+  "laterality": "LEFT",
+  "view": "CC",
+  "lesions": [
+    {
+      "type": "mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 3"
+    }
+  ]
+}

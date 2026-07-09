@@ -1,0 +1,43 @@
+{
+  "image_id": "347b32bd628a543c96ba6baf027e9781",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "lesions": [
+    {
+      "type": "Architectural Distortion",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 1505.5130927105454,
+        "ymin": 1313.4607218683657,
+        "xmax": 1979.154989384289,
+        "ymax": 1866.7062986553435
+      },
+      "bbox_normalized": {
+        "x_center": 0.8659711933635275,
+        "y_center": 0.5654635527246994,
+        "width": 0.23540849735275515,
+        "height": 0.19674451521585273
+      }
+    },
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 1505.5130927105454,
+        "ymin": 1313.4607218683657,
+        "xmax": 1979.154989384289,
+        "ymax": 1866.7062986553435
+      },
+      "bbox_normalized": {
+        "x_center": 0.8659711933635275,
+        "y_center": 0.5654635527246994,
+        "width": 0.23540849735275515,
+        "height": 0.19674451521585273
+      }
+    }
+  ]
+}

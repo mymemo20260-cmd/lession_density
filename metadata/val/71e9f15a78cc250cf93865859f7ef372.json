@@ -1,0 +1,25 @@
+{
+  "image_id": "71e9f15a78cc250cf93865859f7ef372",
+  "split": "val",
+  "birads": "BI-RADS 3",
+  "lesions": [
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 3",
+      "bbox_original": {
+        "xmin": 2547.3500976562,
+        "ymin": 2254.9099121094,
+        "xmax": 2799.4899902344,
+        "ymax": 2481.6298828125
+      },
+      "bbox_normalized": {
+        "x_center": 0.9547928728376072,
+        "y_center": 0.6731864404380188,
+        "width": 0.0900499616350714,
+        "height": 0.06444569946080159
+      }
+    }
+  ]
+}

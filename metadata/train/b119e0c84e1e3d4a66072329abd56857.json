@@ -1,0 +1,25 @@
+{
+  "image_id": "b119e0c84e1e3d4a66072329abd56857",
+  "split": "train",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Suspicious Lymph Node",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 2664.9499511719,
+        "ymin": 237.63900756836,
+        "xmax": 2801.7299804688,
+        "ymax": 442.80700683594
+      },
+      "bbox_normalized": {
+        "x_center": 0.975883919852125,
+        "y_center": 0.09670921182551165,
+        "width": 0.04823216029574995,
+        "height": 0.058319499507555425
+      }
+    }
+  ]
+}

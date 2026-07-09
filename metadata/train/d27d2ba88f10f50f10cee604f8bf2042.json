@@ -1,0 +1,43 @@
+{
+  "image_id": "d27d2ba88f10f50f10cee604f8bf2042",
+  "split": "train",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Skin Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 2111.1799316406,
+        "ymin": 1372.5600585938,
+        "xmax": 2552.1101074219,
+        "ymax": 1947.2199707031
+      },
+      "bbox_normalized": {
+        "x_center": 0.9141192490468026,
+        "y_center": 0.46365642867275136,
+        "width": 0.17176150190639472,
+        "height": 0.1605195285221508
+      }
+    },
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 2111.1799316406,
+        "ymin": 1372.5600585938,
+        "xmax": 2552.1101074219,
+        "ymax": 1947.2199707031
+      },
+      "bbox_normalized": {
+        "x_center": 0.9141192490468026,
+        "y_center": 0.46365642867275136,
+        "width": 0.17176150190639472,
+        "height": 0.1605195285221508
+      }
+    }
+  ]
+}

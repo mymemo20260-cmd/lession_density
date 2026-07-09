@@ -1,0 +1,25 @@
+{
+  "image_id": "8e584ce1935cac6708d5032cd3f01dcb",
+  "split": "train",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Skin Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 94.122398376465,
+        "ymin": 1272.7800292969,
+        "xmax": 310.92098999023,
+        "ymax": 1775.8800048828
+      },
+      "bbox_normalized": {
+        "x_center": 0.10065690565772739,
+        "y_center": 0.5420803759209993,
+        "width": 0.10775277913208997,
+        "height": 0.17891179786127315
+      }
+    }
+  ]
+}

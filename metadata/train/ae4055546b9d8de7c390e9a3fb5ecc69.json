@@ -1,0 +1,61 @@
+{
+  "image_id": "ae4055546b9d8de7c390e9a3fb5ecc69",
+  "split": "train",
+  "birads": "BI-RADS 4",
+  "lesions": [
+    {
+      "type": "Suspicious Calcification",
+      "class_id": 1,
+      "category": "Calcification",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 304.33401489258,
+        "ymin": 1281.2399902344,
+        "xmax": 646.25201416016,
+        "ymax": 1667.1400146484
+      },
+      "bbox_normalized": {
+        "x_center": 0.16974750518798928,
+        "y_center": 0.41904207005156335,
+        "width": 0.12211357116699284,
+        "height": 0.10969301433030126
+      }
+    },
+    {
+      "type": "Architectural Distortion",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 304.33401489258,
+        "ymin": 1281.2399902344,
+        "xmax": 646.25201416016,
+        "ymax": 1667.1400146484
+      },
+      "bbox_normalized": {
+        "x_center": 0.16974750518798928,
+        "y_center": 0.41904207005156335,
+        "width": 0.12211357116699284,
+        "height": 0.10969301433030126
+      }
+    },
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 304.33401489258,
+        "ymin": 1281.2399902344,
+        "xmax": 646.25201416016,
+        "ymax": 1667.1400146484
+      },
+      "bbox_normalized": {
+        "x_center": 0.16974750518798928,
+        "y_center": 0.41904207005156335,
+        "width": 0.12211357116699284,
+        "height": 0.10969301433030126
+      }
+    }
+  ]
+}

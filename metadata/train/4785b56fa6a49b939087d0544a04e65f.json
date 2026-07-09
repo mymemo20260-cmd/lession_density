@@ -1,0 +1,25 @@
+{
+  "image_id": "4785b56fa6a49b939087d0544a04e65f",
+  "split": "train",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Skin Thickening",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 2097.0900878906,
+        "ymin": 1386.5600585938,
+        "xmax": 2198.9899902344,
+        "ymax": 1895.1700439453
+      },
+      "bbox_normalized": {
+        "x_center": 0.7671571568080358,
+        "y_center": 0.4664198553921404,
+        "width": 0.03639282226564289,
+        "height": 0.1445736172119102
+      }
+    }
+  ]
+}

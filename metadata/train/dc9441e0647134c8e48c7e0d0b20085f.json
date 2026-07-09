@@ -1,0 +1,43 @@
+{
+  "image_id": "dc9441e0647134c8e48c7e0d0b20085f",
+  "split": "train",
+  "birads": "BI-RADS 3",
+  "lesions": [
+    {
+      "type": "Skin Thickening",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 3",
+      "bbox_original": {
+        "xmin": 1941.3699951172,
+        "ymin": 1758.0300292969,
+        "xmax": 2216.2099609375,
+        "ymax": 2062.0900878906
+      },
+      "bbox_normalized": {
+        "x_center": 0.7424249921526249,
+        "y_center": 0.5429391866383598,
+        "width": 0.09815713065010712,
+        "height": 0.0864298063086128
+      }
+    },
+    {
+      "type": "Focal Asymmetry",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 3",
+      "bbox_original": {
+        "xmin": 1941.3699951172,
+        "ymin": 1758.0300292969,
+        "xmax": 2216.2099609375,
+        "ymax": 2062.0900878906
+      },
+      "bbox_normalized": {
+        "x_center": 0.7424249921526249,
+        "y_center": 0.5429391866383598,
+        "width": 0.09815713065010712,
+        "height": 0.0864298063086128
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "image_id": "8a284a47f941a8be6a83bb2d0f249224",
+  "split": "train",
+  "birads": "BI-RADS 5",
+  "lesions": [
+    {
+      "type": "Skin Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 249.64300537109,
+        "ymin": 1439.4599609375,
+        "xmax": 593.67797851562,
+        "ymax": 1858.0300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.1505930328369125,
+        "y_center": 0.4686597484699261,
+        "width": 0.12286963326590357,
+        "height": 0.11897955325736209
+      }
+    },
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 249.64300537109,
+        "ymin": 1439.4599609375,
+        "xmax": 593.67797851562,
+        "ymax": 1858.0300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.1505930328369125,
+        "y_center": 0.4686597484699261,
+        "width": 0.12286963326590357,
+        "height": 0.11897955325736209
+      }
+    },
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 5",
+      "bbox_original": {
+        "xmin": 249.64300537109,
+        "ymin": 1439.4599609375,
+        "xmax": 593.67797851562,
+        "ymax": 1858.0300292969
+      },
+      "bbox_normalized": {
+        "x_center": 0.1505930328369125,
+        "y_center": 0.4686597484699261,
+        "width": 0.12286963326590357,
+        "height": 0.11897955325736209
+      }
+    }
+  ]
+}

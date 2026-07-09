@@ -1,0 +1,25 @@
+{
+  "image_id": "c99575f6b786336b2c51991f2e84ec91",
+  "split": "val",
+  "birads": "Inconnu",
+  "lesions": [
+    {
+      "type": "Nipple Retraction",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "Inconnu",
+      "bbox_original": {
+        "xmin": 1737.3800048828,
+        "ymin": 2502.6499023438,
+        "xmax": 2246.1000976562,
+        "ymax": 2700.4899902344
+      },
+      "bbox_normalized": {
+        "x_center": 0.7113357325962499,
+        "y_center": 0.7395025430042923,
+        "width": 0.1816857474190715,
+        "height": 0.05623652299334847
+      }
+    }
+  ]
+}

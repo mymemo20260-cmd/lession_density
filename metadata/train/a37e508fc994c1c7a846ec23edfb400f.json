@@ -1,0 +1,25 @@
+{
+  "image_id": "a37e508fc994c1c7a846ec23edfb400f",
+  "split": "train",
+  "birads": "BI-RADS 4",
+  "lesions": [
+    {
+      "type": "Mass",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 4",
+      "bbox_original": {
+        "xmin": 2249.7099609375,
+        "ymin": 561.31201171875,
+        "xmax": 2460.1201171875,
+        "ymax": 795.99401855469
+      },
+      "bbox_normalized": {
+        "x_center": 0.8410410853794643,
+        "y_center": 0.19290875927706652,
+        "width": 0.07514648437500004,
+        "height": 0.06670892746899942
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "image_id": "0784895356dd8e1e6ddcf536ff3d086f",
+  "split": "train",
+  "birads": "BI-RADS 3",
+  "lesions": [
+    {
+      "type": "Focal Asymmetry",
+      "class_id": 0,
+      "category": "Mass",
+      "birads": "BI-RADS 3",
+      "bbox_original": {
+        "xmin": 79.68620300293,
+        "ymin": 1374.5300292969,
+        "xmax": 409.97698974609,
+        "ymax": 1640.9599609375
+      },
+      "bbox_normalized": {
+        "x_center": 0.08743985584803927,
+        "y_center": 0.42858015779340536,
+        "width": 0.11796099526541427,
+        "height": 0.07573335180233087
+      }
+    }
+  ]
+}
