@@ -16,9 +16,23 @@ import pandas as pd
 import cv2
 import gc
 import json
+import os
+import sys
 from dataclasses import dataclass, field, asdict
 from typing import Optional, List, Dict, Any
-from ultralytics import YOLO
+
+# Désactiver les warnings TensorFlow
+import warnings
+warnings.filterwarnings('ignore')
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+# Vérifier et installer ultralytics si nécessaire
+try:
+    from ultralytics import YOLO
+except ImportError:
+    st.error("⚠️ La bibliothèque 'ultralytics' n'est pas installée.")
+    st.code("pip install ultralytics")
+    st.stop()
 
 # ==========================================================
 # CONFIGURATION GÉNÉRALE
@@ -61,7 +75,6 @@ DENSITY_DESC = {
 
 MODELE_YOLO_PATH = "detecteur_masscalcif.pt"
 IMGSZ = 1024
-MARGE_CROP = 0.15
 
 BIRADS_RECO = {
     "BI-RADS 1": "✅ Mammographie normale — aucune lésion détectée.",
@@ -78,7 +91,7 @@ COULEURS_BIRADS = {
 }
 
 # ==========================================================
-# LOSS ORDINALE — déclarée AVANT le chargement du modèle
+# LOSS ORDINALE
 # ==========================================================
 
 @tf.keras.utils.register_keras_serializable(package="Custom")
@@ -98,38 +111,89 @@ def ordinal_loss(y_true, y_pred):
     return ce + 0.5 * tf.cast(penalty, tf.float32)
 
 # ==========================================================
-# STRUCTURES DE DONNÉES POUR BI-RADS
+# CHARGEMENT DU MODÈLE DE DENSITÉ - VERSION ROBUSTE
 # ==========================================================
 
-@dataclass
-class Lesion:
-    type_lesion: str
-    birads: str
-    details: dict = field(default_factory=dict)
-    box: Optional[tuple] = None
+@st.cache_resource
+def load_density_model():
+    """Charge le modèle de densité avec plusieurs méthodes de fallback."""
+    
+    # Chemins possibles du modèle
+    model_paths = [
+        "breast_density_cnn_final.keras",
+        "breast_density_cnn_final.h5",
+        "breast_density_model.keras",
+        "breast_density_model.h5",
+        "density_model.keras",
+        "density_model.h5"
+    ]
+    
+    # Vérifier quels fichiers existent
+    existing_paths = [p for p in model_paths if os.path.exists(p)]
+    
+    if not existing_paths:
+        return None, "Aucun modèle de densité trouvé. Veuillez placer 'breast_density_cnn_final.keras' dans le dossier."
 
-@dataclass
-class RapportLesions:
-    fichier: str
-    nb_masses: int
-    nb_amas_calcif: int
-    lesions: List[dict]
-    birads_final: str
-    recommandation: str
+    custom_objects = {'ordinal_loss': ordinal_loss}
+    
+    # Essayer chaque chemin
+    for path in existing_paths:
+        try:
+            st.info(f"Tentative de chargement: {path}")
+            
+            # Méthode 1: Chargement standard avec custom_objects
+            model = tf.keras.models.load_model(
+                path,
+                compile=False,
+                custom_objects=custom_objects
+            )
+            st.success(f"✅ Modèle chargé depuis {path}")
+            return model, None
+            
+        except Exception as e1:
+            st.warning(f"Échec avec {path}: {str(e1)[:100]}...")
+            
+            try:
+                # Méthode 2: Sans custom_objects
+                model = tf.keras.models.load_model(path, compile=False)
+                st.success(f"✅ Modèle chargé depuis {path} (sans custom_objects)")
+                return model, None
+                
+            except Exception as e2:
+                try:
+                    # Méthode 3: Avec keras directement
+                    import keras
+                    model = keras.saving.load_model(path, custom_objects=custom_objects)
+                    st.success(f"✅ Modèle chargé depuis {path} (via keras)")
+                    return model, None
+                    
+                except Exception as e3:
+                    continue
+    
+    return None, "Impossible de charger le modèle de densité avec les méthodes disponibles."
 
 # ==========================================================
-# PRÉTRAITEMENT DES MAMMOGRAPHIES (DENSITÉ)
+# CHARGEMENT DU MODÈLE YOLO
+# ==========================================================
+
+@st.cache_resource
+def load_yolo_model():
+    """Charge le modèle YOLO."""
+    if not os.path.exists(MODELE_YOLO_PATH):
+        return None, f"Fichier {MODELE_YOLO_PATH} non trouvé. Le modèle YOLO est optionnel."
+    
+    try:
+        model = YOLO(MODELE_YOLO_PATH)
+        return model, None
+    except Exception as e:
+        return None, str(e)
+
+# ==========================================================
+# PRÉTRAITEMENT DES MAMMOGRAPHIES
 # ==========================================================
 
 def preprocess_mammogram_image(img_array: np.ndarray, img_size: int = 512) -> np.ndarray:
-    """
-    Pipeline de prétraitement adapté aux mammographies :
-    1. Uniformisation fond blanc/noir
-    2. Détection et recadrage du sein
-    3. CLAHE pour égaliser le contraste
-    4. Sharpen léger
-    5. Redimensionnement avec conservation des proportions
-    """
+    """Pipeline de prétraitement adapté aux mammographies."""
     
     if len(img_array.shape) == 3:
         img = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
@@ -166,14 +230,14 @@ def preprocess_mammogram_image(img_array: np.ndarray, img_size: int = 512) -> np
     clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
     img = clahe.apply(img)
     
-    # Sharpen léger
+    # Sharpen
     blur = cv2.GaussianBlur(img, (0, 0), sigmaX=2)
     img = cv2.addWeighted(img, 1.5, blur, -0.5, 0)
     
     # Normalisation
     img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX)
     
-    # Resize en conservant les proportions
+    # Resize
     h, w = img.shape
     scale = min(img_size / w, img_size / h)
     new_w = int(w * scale)
@@ -193,6 +257,28 @@ def preprocess_pil_image(pil_img: Image.Image, img_size: int = 512) -> np.ndarra
     """Convertit une image PIL en tableau numpy prétraité."""
     img_array = np.array(pil_img)
     return preprocess_mammogram_image(img_array, img_size)
+
+# ==========================================================
+# PRÉDICTION DENSITÉ
+# ==========================================================
+
+def predict_density(model, img_array):
+    """Prédit la densité mammaire."""
+    try:
+        probs = model.predict(img_array, verbose=0)[0]
+        idx = int(np.argmax(probs))
+        label = CLASS_NAMES_DENSITY[idx]
+        all_probs = {CLASS_NAMES_DENSITY[i]: float(probs[i]) for i in range(3)}
+        return label, float(probs[idx]), all_probs
+    except Exception as e:
+        raise Exception(f"Erreur lors de la prédiction: {e}")
+
+def prepare_for_model(img_array: np.ndarray, target_size: int) -> np.ndarray:
+    """Prépare l'image pour le modèle CNN."""
+    img_rgb = cv2.cvtColor(img_array, cv2.COLOR_GRAY2RGB)
+    img_resized = cv2.resize(img_rgb, (target_size, target_size))
+    arr = img_resized.astype(np.float32) / 255.0
+    return np.expand_dims(arr, axis=0)
 
 # ==========================================================
 # FONCTIONS POUR LA DÉTECTION DES LÉSIONS (BI-RADS)
@@ -225,7 +311,6 @@ def features_contour(contour):
     hull = cv2.convexHull(contour)
     ah = cv2.contourArea(hull)
     convexite = aire / ah if ah > 0 else 0
-    deficit_convexite = (ah - aire) / ah if ah > 0 else 0
     
     rapport_axes = 1.0
     if len(contour) >= 5:
@@ -242,7 +327,6 @@ def features_contour(contour):
     return {
         "circularite": circularite,
         "convexite": convexite,
-        "deficit_convexite": deficit_convexite,
         "rapport_axes": rapport_axes,
         "rugosite": rugosite
     }
@@ -276,73 +360,82 @@ def analyser_masse(crop):
 
 def detecter_masses(img_gray, model, conf):
     """Détecte les masses avec YOLO."""
-    img_3c = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
-    res = model.predict(img_3c, conf=conf, iou=0.5, imgsz=IMGSZ, verbose=False)[0]
-    masses = []
+    if model is None:
+        return []
     
-    if res.boxes is not None:
-        for box in res.boxes:
-            if int(box.cls[0]) != 0:
-                continue
-            
-            x1, y1, x2, y2 = [int(v) for v in box.xyxy[0]]
-            crop = img_gray[y1:y2, x1:x2]
-            
-            if crop.size == 0:
-                continue
-            
-            analyse = analyser_masse(crop)
-            
-            score = analyse["score"] + (1 - float(box.conf[0])) * 0.1
-            if score >= 0.45:
-                birads = "BI-RADS 4"
-            elif score >= 0.25:
-                birads = "BI-RADS 3"
-            else:
-                birads = "BI-RADS 2"
-            
-            masses.append(Lesion(
-                "Masse",
-                birads,
-                {
-                    "forme": analyse["forme"],
-                    "confiance": round(float(box.conf[0]), 2),
-                    "score": score
-                },
-                (x1, y1, x2, y2)
-            ))
-    
-    return masses
+    try:
+        img_3c = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
+        res = model.predict(img_3c, conf=conf, iou=0.5, imgsz=IMGSZ, verbose=False)[0]
+        masses = []
+        
+        if res.boxes is not None:
+            for box in res.boxes:
+                if int(box.cls[0]) != 0:
+                    continue
+                
+                x1, y1, x2, y2 = [int(v) for v in box.xyxy[0]]
+                crop = img_gray[y1:y2, x1:x2]
+                
+                if crop.size == 0:
+                    continue
+                
+                analyse = analyser_masse(crop)
+                
+                score = analyse["score"] + (1 - float(box.conf[0])) * 0.1
+                if score >= 0.45:
+                    birads = "BI-RADS 4"
+                elif score >= 0.25:
+                    birads = "BI-RADS 3"
+                else:
+                    birads = "BI-RADS 2"
+                
+                masses.append({
+                    "type_lesion": "Masse",
+                    "birads": birads,
+                    "details": {
+                        "forme": analyse["forme"],
+                        "confiance": round(float(box.conf[0]), 2),
+                        "score": score
+                    },
+                    "box": (x1, y1, x2, y2)
+                })
+        
+        return masses
+    except Exception as e:
+        return []
 
 def detecter_calcifications(img_gray):
     """Détecte les microcalcifications."""
-    mask = masque_sein(img_gray)
-    
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    enh = clahe.apply(img_gray)
-    
-    se = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (25, 25))
-    tophat = cv2.morphologyEx(enh, cv2.MORPH_TOPHAT, se)
-    
-    zone = tophat[mask > 0]
-    seuil = np.percentile(zone, 99) if zone.size else 30
-    _, thr = cv2.threshold(tophat, seuil, 255, cv2.THRESH_BINARY)
-    thr = cv2.bitwise_and(thr, thr, mask=mask)
-    
-    k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-    cleaned = cv2.morphologyEx(thr, cv2.MORPH_OPEN, k, iterations=1)
-    
-    contours, _ = cv2.findContours(cleaned, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    points = []
-    for c in contours:
-        aire = cv2.contourArea(c)
-        if 2 <= aire <= 90:
-            M = cv2.moments(c)
-            if M["m00"] > 0:
-                points.append((M["m10"] / M["m00"], M["m01"] / M["m00"]))
-    
-    return points
+    try:
+        mask = masque_sein(img_gray)
+        
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        enh = clahe.apply(img_gray)
+        
+        se = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (25, 25))
+        tophat = cv2.morphologyEx(enh, cv2.MORPH_TOPHAT, se)
+        
+        zone = tophat[mask > 0]
+        seuil = np.percentile(zone, 99) if zone.size else 30
+        _, thr = cv2.threshold(tophat, seuil, 255, cv2.THRESH_BINARY)
+        thr = cv2.bitwise_and(thr, thr, mask=mask)
+        
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+        cleaned = cv2.morphologyEx(thr, cv2.MORPH_OPEN, k, iterations=1)
+        
+        contours, _ = cv2.findContours(cleaned, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        points = []
+        for c in contours:
+            aire = cv2.contourArea(c)
+            if 2 <= aire <= 90:
+                M = cv2.moments(c)
+                if M["m00"] > 0:
+                    points.append((M["m10"] / M["m00"], M["m01"] / M["m00"]))
+        
+        return points
+    except Exception as e:
+        return []
 
 def regrouper_amas(points, img_w):
     """Regroupe les calcifications en amas."""
@@ -372,11 +465,11 @@ def regrouper_amas(points, img_w):
     
     return amas
 
-def analyser_lesions(img_gray, model, conf):
-    """Pipeline complet d'analyse des lésions."""
+def analyser_lesions(img_gray, yolo_model, conf):
+    """Analyse complète des lésions."""
     H, W = img_gray.shape
     
-    masses = detecter_masses(img_gray, model, conf)
+    masses = detecter_masses(img_gray, yolo_model, conf)
     points = detecter_calcifications(img_gray)
     amas = regrouper_amas(points, W)
     
@@ -389,40 +482,40 @@ def analyser_lesions(img_gray, model, conf):
         nb_calcif = len(amas_pts)
         if nb_calcif >= 10:
             birads = "BI-RADS 3"
-        elif nb_calcif >= 3:
-            birads = "BI-RADS 2"
         else:
             birads = "BI-RADS 2"
         
-        lesions.append(Lesion(
-            "Calcifications",
-            birads,
-            {"nombre": nb_calcif, "taille": "micro"},
-            box
-        ))
+        lesions.append({
+            "type_lesion": "Calcifications",
+            "birads": birads,
+            "details": {"nombre": nb_calcif, "taille": "micro"},
+            "box": box
+        })
     
     if not lesions:
         birads_final = "BI-RADS 1"
     else:
         niveaux = {"BI-RADS 1": 0, "BI-RADS 2": 2, "BI-RADS 3": 3, "BI-RADS 4": 4}
-        max_niveau = max(niveaux.get(l.birads, 0) for l in lesions)
+        max_niveau = max(niveaux.get(l["birads"], 0) for l in lesions)
         birads_final = f"BI-RADS {max_niveau}" if max_niveau > 0 else "BI-RADS 1"
     
-    return RapportLesions(
-        "image",
-        len(masses),
-        len(amas),
-        [asdict(l) for l in lesions],
-        birads_final,
-        BIRADS_RECO.get(birads_final, "")
-    )
+    return {
+        "lesions": lesions,
+        "birads_final": birads_final,
+        "recommandation": BIRADS_RECO.get(birads_final, ""),
+        "nb_masses": len(masses),
+        "nb_calcifications": len(amas)
+    }
 
 def annoter_image_lesions(img_gray, rapport):
     """Annote l'image avec les détections de lésions."""
+    if not rapport or not rapport.get("lesions"):
+        return cv2.cvtColor(img_gray, cv2.COLOR_GRAY2RGB)
+    
     img = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
     couleurs = {"BI-RADS 2": (0, 180, 0), "BI-RADS 3": (0, 180, 255), "BI-RADS 4": (0, 0, 220)}
     
-    for l in rapport.lesions:
+    for l in rapport["lesions"]:
         if not l.get("box"):
             continue
         
@@ -436,46 +529,6 @@ def annoter_image_lesions(img_gray, rapport):
     return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 # ==========================================================
-# CHARGEMENT DES MODÈLES
-# ==========================================================
-
-@st.cache_resource
-def load_density_model():
-    try:
-        model = tf.keras.models.load_model(
-            "breast_density_cnn_final.keras",
-            compile=False
-        )
-        return model, None
-    except Exception as e:
-        return None, str(e)
-
-@st.cache_resource
-def load_yolo_model():
-    try:
-        return YOLO(MODELE_YOLO_PATH), None
-    except Exception as e:
-        return None, str(e)
-
-# ==========================================================
-# PRÉDICTION DENSITÉ
-# ==========================================================
-
-def predict_density(model, img_array):
-    probs = model.predict(img_array, verbose=0)[0]
-    idx   = int(np.argmax(probs))
-    label = CLASS_NAMES_DENSITY[idx]
-    all_probs = {CLASS_NAMES_DENSITY[i]: float(probs[i]) for i in range(3)}
-    return label, float(probs[idx]), all_probs
-
-def prepare_for_model(img_array: np.ndarray, target_size: int) -> np.ndarray:
-    """Prépare l'image prétraitée pour le modèle CNN."""
-    img_rgb = cv2.cvtColor(img_array, cv2.COLOR_GRAY2RGB)
-    img_resized = cv2.resize(img_rgb, (target_size, target_size))
-    arr = img_resized.astype(np.float32) / 255.0
-    return np.expand_dims(arr, axis=0)
-
-# ==========================================================
 # ANALYSE COMPLÈTE D'UNE IMAGE
 # ==========================================================
 
@@ -484,7 +537,7 @@ def analyze_complete(img, density_model, yolo_model, conf_threshold=0.15):
     results = {"success": True, "filename": getattr(img, 'name', 'image')}
     
     try:
-        # Convertir en niveaux de gris pour le prétraitement
+        # Convertir en niveaux de gris
         if isinstance(img, Image.Image):
             img_gray = img.convert("L")
             img_array = np.array(img_gray)
@@ -511,17 +564,11 @@ def analyze_complete(img, density_model, yolo_model, conf_threshold=0.15):
         # 2. ANALYSE LÉSIONS
         if yolo_model is not None:
             rapport = analyser_lesions(img_gray, yolo_model, conf_threshold)
-            results["lesions"] = rapport
+            results.update(rapport)
             
             # Image annotée
             img_annotated = annoter_image_lesions(img_gray, rapport)
             results["annotated"] = img_annotated
-            
-            # Résumé BI-RADS
-            results["birads"] = rapport.birads_final
-            results["recommandation"] = rapport.recommandation
-            results["nb_masses"] = rapport.nb_masses
-            results["nb_calcifications"] = rapport.nb_amas_calcif
 
     except Exception as e:
         results = {"success": False, "error": str(e), "filename": getattr(img, 'name', 'image')}
@@ -600,15 +647,38 @@ def main():
         if density_model:
             st.success("✅ Modèle densité (ACR) chargé")
         else:
-            st.error(f"❌ Modèle densité : {density_error}")
+            st.error(f"❌ {density_error}")
+            st.info("💡 Placez le fichier 'breast_density_cnn_final.keras' dans le dossier de l'application.")
+    
     with col_status2:
         if yolo_model:
             st.success("✅ Modèle lésions (YOLO) chargé")
         else:
-            st.warning(f"⚠️ Modèle lésions non chargé : {yolo_error}")
+            st.warning(f"⚠️ {yolo_error}")
+            st.info("💡 Le modèle YOLO est optionnel pour la détection des lésions.")
     
     if density_model is None:
-        st.error("Le modèle de densité est requis. Vérifiez que 'breast_density_cnn_final.keras' est présent.")
+        st.error("⚠️ Le modèle de densité est requis pour l'analyse.")
+        st.info("""
+        **Comment obtenir le modèle ?**
+        1. Placez le fichier `breast_density_cnn_final.keras` dans le dossier de l'application
+        2. Ou modifiez le chemin dans la variable `model_paths` dans la fonction `load_density_model()`
+        3. Formats supportés: .keras, .h5, ou SavedModel
+        """)
+        
+        # Upload du modèle en fallback
+        with st.expander("📤 Uploader un modèle de densité"):
+            uploaded_model = st.file_uploader(
+                "Uploader un fichier modèle (.keras ou .h5)",
+                type=["keras", "h5"],
+                key="model_upload"
+            )
+            if uploaded_model is not None:
+                with open("uploaded_model.keras", "wb") as f:
+                    f.write(uploaded_model.getvalue())
+                st.success("✅ Modèle uploadé! Redémarrez l'application.")
+                st.button("🔄 Redémarrer", on_click=lambda: st.rerun())
+        
         st.stop()
     
     st.markdown("---")
@@ -699,7 +769,7 @@ def main():
                 row["Statut"] = "OK"
                 row["Densité ACR"] = res.get("density_label", "—")
                 row["Confiance Densité"] = f"{res.get('density_confidence', 0)*100:.1f}%"
-                row["BI-RADS"] = res.get("birads", "—")
+                row["BI-RADS"] = res.get("birads_final", "—")
                 row["Nb Masses"] = res.get("nb_masses", 0)
                 row["Nb Calcifications"] = res.get("nb_calcifications", 0)
                 
@@ -711,14 +781,15 @@ def main():
                 row["Erreur"] = res.get("error", "")
             rows.append(row)
         
-        csv = pd.DataFrame(rows).to_csv(index=False)
-        st.download_button(
-            "📥 Télécharger le CSV",
-            data=csv,
-            file_name="analyse_mammaire_complete.csv",
-            mime="text/csv",
-            use_container_width=True
-        )
+        if rows:
+            csv = pd.DataFrame(rows).to_csv(index=False)
+            st.download_button(
+                "📥 Télécharger le CSV",
+                data=csv,
+                file_name="analyse_mammaire_complete.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
     
     # ==========================================================
     # AFFICHAGE DES RÉSULTATS
@@ -761,8 +832,9 @@ def main():
     
     # ---------- GRILLE ----------
     if view == "Grille":
-        for i in range(0, len(uploaded_files), 2):
-            cols = st.columns(2)
+        cols_per_row = min(3, len(uploaded_files))
+        for i in range(0, len(uploaded_files), cols_per_row):
+            cols = st.columns(cols_per_row)
             for j, col in enumerate(cols):
                 idx = i + j
                 if idx >= len(uploaded_files):
@@ -775,14 +847,9 @@ def main():
                     
                     if res:
                         if res.get("success"):
-                            # Densité
                             st.markdown(density_badge(res), unsafe_allow_html=True)
-                            
-                            # BI-RADS
-                            birads = res.get("birads", "—")
+                            birads = res.get("birads_final", "—")
                             st.markdown(f"**BI-RADS:** {birads_badge(birads)}", unsafe_allow_html=True)
-                            
-                            # Statistiques rapides
                             nb_masses = res.get("nb_masses", 0)
                             nb_calc = res.get("nb_calcifications", 0)
                             st.caption(f"Masses: {nb_masses} | Calcifications: {nb_calc}")
@@ -793,7 +860,7 @@ def main():
                         else:
                             st.error(f"Erreur : {res.get('error', '')[:80]}")
                     else:
-                        st.info("Non analysé — cliquez sur Analyser")
+                        st.info("Non analysé")
     
     # ---------- DÉTAIL ----------
     elif view == "Détail":
@@ -804,13 +871,11 @@ def main():
                 if res and res.get("success"):
                     img = Image.open(f)
                     
-                    # Images originales et prétraitées
                     if res.get("preprocessed") is not None:
                         display_two_images(img, res["preprocessed"])
                     
                     st.markdown("---")
                     
-                    # Résultats densité
                     col_dens, col_birads = st.columns(2)
                     with col_dens:
                         st.markdown("### 📊 Densité ACR")
@@ -834,7 +899,7 @@ def main():
                     
                     with col_birads:
                         st.markdown("### 🎯 BI-RADS")
-                        birads = res.get("birads", "—")
+                        birads = res.get("birads_final", "—")
                         st.markdown(f"**Classification:** {birads_badge(birads)}", unsafe_allow_html=True)
                         
                         reco = res.get("recommandation", "")
@@ -849,23 +914,21 @@ def main():
                         st.metric("Masses détectées", res.get("nb_masses", 0))
                         st.metric("Amas calcifications", res.get("nb_calcifications", 0))
                     
-                    # Image annotée
                     if res.get("annotated") is not None:
                         st.markdown("---")
                         st.markdown("### 🔬 Détection des lésions")
                         st.image(res["annotated"], use_container_width=True)
                     
-                    # Détail des lésions
-                    lesions_data = res.get("lesions")
-                    if lesions_data and lesions_data.lesions:
+                    lesions = res.get("lesions", [])
+                    if lesions:
                         st.markdown("### 📋 Détail des lésions")
                         data = []
-                        for i, l in enumerate(lesions_data.lesions, 1):
+                        for i, l in enumerate(lesions, 1):
                             data.append({
                                 "N°": i,
-                                "Type": l["type_lesion"],
-                                "BI-RADS": l["birads"],
-                                "Détails": str(l["details"])[:80] + ("..." if len(str(l["details"])) > 80 else "")
+                                "Type": l.get("type_lesion", ""),
+                                "BI-RADS": l.get("birads", ""),
+                                "Détails": str(l.get("details", {}))[:80]
                             })
                         st.dataframe(pd.DataFrame(data), use_container_width=True, hide_index=True)
                 
@@ -885,7 +948,7 @@ def main():
             if res.get("success"):
                 row["Densité ACR"] = res.get("density_label", "—")
                 row["Confiance Densité"] = f"{res.get('density_confidence', 0)*100:.1f}%"
-                row["BI-RADS"] = res.get("birads", "—")
+                row["BI-RADS"] = res.get("birads_final", "—")
                 row["Masses"] = res.get("nb_masses", 0)
                 row["Calcifications"] = res.get("nb_calcifications", 0)
                 row["Statut"] = "✅"
@@ -895,7 +958,8 @@ def main():
                 row["Statut"] = "⏳"
             rows.append(row)
         
-        st.dataframe(pd.DataFrame(rows), use_container_width=True)
+        if rows:
+            st.dataframe(pd.DataFrame(rows), use_container_width=True)
     
     # ==========================================================
     # SIDEBAR - STATISTIQUES
@@ -928,7 +992,7 @@ def main():
             st.markdown("**Distribution BI-RADS**")
             for birads in ["BI-RADS 1", "BI-RADS 2", "BI-RADS 3", "BI-RADS 4"]:
                 count = sum(1 for n in analyzed 
-                           if st.session_state.results_complete[n].get("birads") == birads)
+                           if st.session_state.results_complete[n].get("birads_final") == birads)
                 if count:
                     color = COULEURS_BIRADS.get(birads, "#999")
                     st.markdown(f'<span style="color:{color}">■</span> {birads} : **{count}**',
