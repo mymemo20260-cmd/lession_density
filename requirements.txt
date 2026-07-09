@@ -1,9 +1,9 @@
 streamlit
 ultralytics
 onnxruntime
-tensorflow==2.20.0
-numpy==2.0.2
-pillow==11.3.0
+tensorflow
+numpy
+pillow
 pandas
 h5py
 protobuf
